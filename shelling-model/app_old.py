@@ -1,11 +1,3 @@
-import random
-from math import floor
-from itertools import product
-from pprint import pprint
-import numpy as np
-
-
-#
 # class Agent:
 #     def __init__(self, type, pos, tolerancy, model):
 #         self.type = type
@@ -70,38 +62,47 @@ import numpy as np
 #         if other_type >= self.tolerancy:
 #             return False
 #         return True
+# class App:
+#     def __init__(self, grid_size, density, f):
+#         self.global_happiness = 0
+#         self.grid_size = grid_size
+#         self.grid = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
+#         self.ratio = floor((grid_size ** 2) * density) // 2
+#         self.empty_spaces = []
+#         for agent_type in [1, 2]:
+#             for _ in range(self.ratio):
+#                 pos_x, pos_y = random.randint(0, grid_size - 1), random.randint(0, grid_size - 1)
+#                 while self.grid[pos_x][pos_y] != 0:
+#                     pos_x, pos_y = random.randint(0, grid_size - 1), random.randint(0, grid_size - 1)
+#                 # self.grid[pos_x][pos_y] = Agent(agent_type, (pos_x, pos_y), f)
+#                 self.grid[pos_y][pos_x] = agent_type
+#         for y in range(grid_size):
+#             for x in range(grid_size):
+#                 if self.grid[y][x] == 0:
+#                     self.empty_spaces.append((y, x))
+#                 else:
+#                     self.grid[y][x] = Agent(self.grid[y][x], (x, y), f, self)
 #
+#     def update(self):
+#         # actions = 0
+#         unhappy_agents = []
+#         for row in self.grid:
+#             for item in row:
+#                 if item != 0:
+#                     if not (item.check_happiness()):
+#                         unhappy_agents.append((item))
+#         new_grid = self.grid.copy()
+#         print(new_grid)
+#         for agent in unhappy_agents:
+#             new_place = random.choice(self.empty_spaces)
+#             del self.empty_spaces[self.empty_spaces.index(new_place)]
+#             self.empty_spaces.append((agent.pos_y, agent.pos_x))
+#             new_grid[agent.pos_y][agent.pos_x], new_grid[new_place[0]][new_place[1]] = 0, agent
+#         self.grid = new_grid
 #
-
-
-class App:
-
-    def __init__(self, size, empty_ratio, similarity_threshold, n_neighbors):
-        self.size = size
-        self.empty_ratio = empty_ratio
-        self.similarity_threshold = similarity_threshold
-        self.n_neighbors = n_neighbors
-
-        p = [(1 - empty_ratio) / 2, (1 - empty_ratio) / 2, empty_ratio]
-        city_size = int(np.sqrt(self.size)) ** 2
-        self.city = np.random.choice([-1, 1, 0], size=city_size, p=p)
-        self.city = np.reshape(self.city, (int(np.sqrt(city_size)), int(np.sqrt(city_size))))
-
-    def update(self):
-        for (row, col), value in np.ndenumerate(self.city):
-            agent = self.city[row, col]
-            print(self.city)
-            if agent != 0:
-                neighborhood = self.city[row - self.n_neighbors:row + self.n_neighbors,
-                               col - self.n_neighbors:col + self.n_neighbors]
-                neighborhood_size = np.size(neighborhood)
-                n_empty_houses = len(np.where(neighborhood == 0)[0])
-                if neighborhood_size != n_empty_houses + 1:
-                    n_similar = len(np.where(neighborhood == agent)[0]) - 1
-                    similarity_ratio = n_similar / (neighborhood_size - n_empty_houses - 1.)
-                    is_unhappy = (similarity_ratio < self.similarity_threshold)
-                    if is_unhappy:
-                        empty_houses = list(zip(np.where(self.city == 0)[0], np.where(self.city == 0)[1]))
-                        random_house = random.choice(empty_houses)
-                        self.city[random_house] = agent
-                        self.city[row, col] = 0
+#     def return_cur_state(self):
+#         return self.grid, self.empty_spaces
+#
+#     def return_grid_visual(self):
+#         color_grid = [[i.type if i != 0 else 0 for i in x] for x in self.grid]
+#         return color_grid
